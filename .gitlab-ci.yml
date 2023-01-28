@@ -2,9 +2,9 @@
 # services:
 #   - docker:dind  
 stages:
-  - deploy
+  - build
 
-deploy:
+build:
   image: docker:18.09-dind
   stage: build
   services:
