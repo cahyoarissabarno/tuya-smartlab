@@ -21,7 +21,8 @@ deploy:
     # stop existing docker container & remove images
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "rm -rf smartlab-api || true"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "mkdir smartlab-api || true"
-    - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
+    # - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
+    - scp -i key.pem -o StrictHostKeyChecking=no -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cd smartlab-api"
     - echo "$DOCKER_COMPOSE" > docker-compose.yml
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "docker-compose build --no-cache"
