@@ -1,39 +1,38 @@
+image:
+  name: docker/compose:latest
+
+services:
+  - docker:dind
 stages:
   - deploy
 
 deploy:
-  # image: docker:18.09-dind
-  image: docker:latest
   stage: deploy
-  # services:
-  #   - docker:dind
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: "" 
+  # only:
+  #   - production
   script:
-  # - docker build --pull -t "$CI_REGISTRY_IMAGE" .
-  # - docker push "$CI_REGISTRY_IMAGE"
-  # Or use docker-compose if you have to build and push multiple images:
-    - apk add --no-cache docker-compose
-    - echo "$DOCKER_COMPOSE" > docker-compose.yml
-    - docker-compose build
+    - docker image prune -f
+    - docker-compose build --no-cache
     - docker-compose up -d
-
+   
 # stages:
 #   - deploy
 
 # deploy:
-#   image: docker:18.09-dind
+#   # image: docker:18.09-dind
+#   image: docker:latest
 #   stage: deploy
-#   services:
-#     - docker:dind
+#   # services:
+#   #   - docker:dind
 #   variables:
 #     DOCKER_HOST: tcp://docker:2375/
 #     DOCKER_DRIVER: overlay2
 #     DOCKER_TLS_CERTDIR: "" 
 #   script:
+#   # - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+#   # - docker push "$CI_REGISTRY_IMAGE"
+#   # Or use docker-compose if you have to build and push multiple images:
 #     - apk add --no-cache docker-compose
 #     - echo "$DOCKER_COMPOSE" > docker-compose.yml
+#     - docker-compose build
 #     - docker-compose up -d
-   
