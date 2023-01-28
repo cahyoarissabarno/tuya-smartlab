@@ -16,9 +16,7 @@ deploy:
   # Or use docker-compose if you have to build and push multiple images:
     - apk add --no-cache docker-compose
     - echo "$DOCKER_COMPOSE" > docker-compose.yml
-    - docker-compose build --pull
-    - docker-compose push
-    - docker-compose pull
+    - docker-compose build
     - docker-compose up -d
 
 # stages:
