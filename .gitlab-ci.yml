@@ -2,10 +2,11 @@ stages:
   - deploy
 
 deploy:
-  image: docker:18.09-dind
+  # image: docker:18.09-dind
+  image: docker:latest
   stage: deploy
-  services:
-    - docker:dind
+  # services:
+  #   - docker:dind
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
