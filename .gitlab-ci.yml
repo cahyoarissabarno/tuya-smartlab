@@ -1,32 +1,42 @@
-image:
-  name: docker/compose:latest
+# image:
+#   name: docker/compose:latest
 
-services:
-  - docker:dind
+# services:
+#   - docker:dind
 
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: "" 
+# variables:
+#   DOCKER_HOST: tcp://docker:2375/
+#   DOCKER_DRIVER: overlay2
+#   DOCKER_TLS_CERTDIR: "" 
 
 stages:
   - deploy
 
 deploy:
+  image: ruby:2.5
   stage: deploy
-  # only:
-  #   - production
   script:
-    - mkdir -p /home/app/
-    - cp -r $PWD/* /home/app/
-    - cd /home/app/
+    - echo "$STAGE_ID_RSA" > key.pem
+    - chmod 400 key.pem
+    # stop existing docker container & remove images
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "rm -rf smartlab-api || true"
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "mkdir smartlab-api || true"
+    - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cd smartlab-api"
     - echo "$DOCKER_COMPOSE" > docker-compose.yml
-    - docker image prune -f
-    - docker-compose build --no-cache
-    - docker-compose up -d
-    - pwd
-    - hostname
-   
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "docker-compose build --no-cache"
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "docker-compose up -d"
+
+    # - mkdir -p furqon@10.0.2.7:/home/furqon/smartlab-api
+    # - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
+    # - cd furqon@10.0.2.7:/home/furqon/smartlab-api
+    # - echo "$DOCKER_COMPOSE" > docker-compose.yml
+    # - docker image prune -f
+    # - docker-compose build --no-cache
+    # - docker-compose up -d
+    # - pwd
+    # - hostname
+  #  furqon@10.0.2.7:/home/furqon/smartlab-api
 # stages:
 #   - deploy
 
