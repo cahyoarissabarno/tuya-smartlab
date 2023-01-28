@@ -17,6 +17,7 @@ deploy:
   # only:
   #   - production
   script:
+    - echo "$DOCKER_COMPOSE" > docker-compose.yml
     - docker image prune -f
     - docker-compose build --no-cache
     - docker-compose up -d
