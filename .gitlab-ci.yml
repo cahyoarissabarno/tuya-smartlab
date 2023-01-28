@@ -17,6 +17,9 @@ deploy:
   # only:
   #   - production
   script:
+    - sudo mkdir -p /home/app/
+    - sudo cp -r $PWD/* /home/app/
+    - cd /home/app/
     - echo "$DOCKER_COMPOSE" > docker-compose.yml
     - docker image prune -f
     - docker-compose build --no-cache
