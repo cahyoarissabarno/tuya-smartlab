@@ -24,7 +24,7 @@ deploy:
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "mkdir /home/furqon/smartlab-api || true"
     # - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
     - scp -i key.pem -o StrictHostKeyChecking=no -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
-    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cd /home/furqon/smartlab-api"
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cd smartlab-api"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "pwd"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "ls"
     # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cat docker-compose.yml"
