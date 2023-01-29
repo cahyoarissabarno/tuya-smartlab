@@ -16,7 +16,7 @@ deploy:
   image: ruby:2.5
   stage: deploy
   script:
-    - echo "$DOCKER_COMPOSE" > docker-compose.yml
+    - cp $DOCKER_COMPOSE docker-compose.yml
     - echo "$STAGE_ID_RSA" > key.pem
     - chmod 400 key.pem
     # stop existing docker container & remove images
