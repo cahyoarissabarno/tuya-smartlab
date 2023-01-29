@@ -25,9 +25,10 @@ deploy:
     # - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
     - scp -i key.pem -o StrictHostKeyChecking=no -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cd /home/furqon/smartlab-api"
-    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cat docker-compose.yml"
-    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cat Dockerfile"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "pwd"
+    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "ls"
+    # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cat docker-compose.yml"
+    # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cat Dockerfile"
     # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "echo $DOCKER_COMPOSE > docker-compose.yml"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "docker-compose build --no-cache"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "docker-compose up -d"
