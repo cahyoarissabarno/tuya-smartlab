@@ -21,9 +21,9 @@ deploy:
     - chmod 400 key.pem
     # stop existing docker container & remove images
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "rm -rf smartlab-api || true"
-    - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "mkdir smartlab-api || true"
+    # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "mkdir smartlab-api || true"
     # - scp -r $PWD/* furqon@10.0.2.7:/home/furqon/smartlab-api
-    - scp -i key.pem -o StrictHostKeyChecking=no -rT $PWD furqon@10.0.2.7:/home/$STAGE_SERVER_USER/smartlab-api
+    - scp -i key.pem -o StrictHostKeyChecking=no -r $PWD furqon@10.0.2.7:/home/$STAGE_SERVER_USER/smartlab-api
     # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "cd ./smartlab-api"
     # - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "pwd"
     - ssh -i key.pem -o StrictHostKeyChecking=no $STAGE_SERVER_USER@$STAGE_SERVER_IP "ls smartlab-api"
