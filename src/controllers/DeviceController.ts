@@ -50,7 +50,7 @@ class DeviceController implements IDeviceController {
 
                 console.log(payload)
                 
-                axios.post('http://10.0.2.7:8080/device', payload)
+                axios.post('http://10.0.2.7:8181/device', payload)
                   .then(function (response) {
                     console.log(response.data);
                   })
