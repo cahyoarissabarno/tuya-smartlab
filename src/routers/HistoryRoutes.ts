@@ -4,7 +4,7 @@ import BaseRoutes from "./BaseRoutes";
 class HistoryRoutes extends BaseRoutes{
     
     routes(): void {
-        this.router.get('/', HistoryController.read);
+        this.router.post('/', HistoryController.read);
     }
     
 }
