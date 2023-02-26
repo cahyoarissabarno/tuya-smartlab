@@ -28,44 +28,48 @@ class DeviceController implements IDeviceController {
             console.log(data)
             // const findDeviceById = await Device.findOne({ where: { user_id: credentials.id } });
             const findDeviceById = await Device.findOne({ where: { device_code: deviceCode } });
-            // const findRoomById = await Room.findOne({ where: { id: findDeviceById.dataValues.room_id } });
+            const findRoomById = await Room.findOne({ where: { id: findDeviceById.dataValues.room_id } });
             // console.log(findRoomById)
 
-            // if (findDeviceById && findRoomById) {
+            if (findDeviceById && findRoomById) {
             // if (findDeviceById) {
                 const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
         //         // send to tuya cloud API
                 const commands = await TuyaRequest("POST", path, data);
                 console.log("com: ",commands)
-            if (findDeviceById) {
+            // if (findDeviceById && findRoomById) {
+                
                 const payload = {
                     date: new Date().getTime(),
-                    // user_id: credentials.id,
+                    user_id: 1,
                     // device_id: deviceCode,
-                    // address: findRoomById.dataValues.address,
+                    from: findRoomById.dataValues.address,
                     device_id: findDeviceById.dataValues.id,
-                    status: 1,
+                    // status: 1,
                     message: data
                 }
 
                 console.log(payload)
                 
-                axios.post('http://10.0.2.7:8181/device', payload)
+                // axios.post('http://10.0.2.7:8181/device', payload)
+                axios.post('http://10.0.2.7:8181/device-test', payload)
+                // axios.post('http://localhost:8080/device-test', payload)
                   .then(function (response) {
                     console.log(response.data);
+                    res.status(200).send(requestHandler({
+                        commands,
+                        ms: new Date().getMilliseconds,
+                        minute: new Date().getMinutes,
+                        hours: new Date().getHours,
+                        date: new Date()
+                        // historyDevice
+                    }, "Succeed send command and record device", 200));
+                    // }, response.data, 200));
                   })
                   .catch(function (error) {
                     console.log(error);
+                    res.status(500).send(error);
                   });
-
-                res.status(200).send(requestHandler({
-                    commands,
-                    ms: new Date().getMilliseconds,
-                    minute: new Date().getMinutes,
-                    hours: new Date().getHours,
-                    date: new Date()
-                    // historyDevice
-                }, "Succeed send command and record device", 200));
 
                 // const historyDevice = await History.create({
                 //     last_date: new Date(),
@@ -77,15 +81,15 @@ class DeviceController implements IDeviceController {
 
                 
             }else{
-                res.status(200).send(requestHandler({
-                    commands,
-                    ms: new Date().getMilliseconds,
-                    minute: new Date().getMinutes,
-                    hours: new Date().getHours,
-                    date: new Date()
-                    // historyDevice
-                }, "Succeed send command only", 200));
-                // throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
+                // res.status(200).send(requestHandler({
+                //     commands,
+                //     ms: new Date().getMilliseconds,
+                //     minute: new Date().getMinutes,
+                //     hours: new Date().getHours,
+                //     date: new Date()
+                //     // historyDevice
+                // }, "Succeed send command only", 200));
+                throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
             }
         } catch (e) {
             return res.status(500).send((e as Error));;
