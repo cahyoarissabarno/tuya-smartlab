@@ -6,6 +6,7 @@ class DeviceRouter extends BaseRoutes {
     routes(): void {
         // internal API extended with TUYA API
         this.router.post('/command/:deviceCode', DeviceController.command);
+        this.router.post('/commanddb/:deviceCode', DeviceController.commanddb);
         this.router.get('/status/:deviceCode', DeviceController.status);
         this.router.get('get-all-device-tuya/:projectId', DeviceController.getRegisteredDeivceOnTuya);
         

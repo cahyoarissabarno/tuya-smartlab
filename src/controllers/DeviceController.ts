@@ -19,7 +19,7 @@ dotenv();
 
 class DeviceController implements IDeviceController {
 
-    command = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    commanddb = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = req.body;
             const { deviceCode } = req.params;
@@ -91,6 +91,33 @@ class DeviceController implements IDeviceController {
             return res.status(500).send((e as Error));;
         }
     }
+
+    command = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+        try {
+            const data = req.body;
+            const { deviceCode } = req.params;
+
+            console.log(data)
+            const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
+    //         // send to tuya cloud API
+            const commands = await TuyaRequest("POST", path, data);
+            console.log("com: ",commands)
+           
+            res.status(200).send(requestHandler({
+                commands,
+                ms: new Date().getMilliseconds,
+                minute: new Date().getMinutes,
+                hours: new Date().getHours,
+                date: new Date()
+                // historyDevice
+            }, "Succeed send command only", 200));
+            // throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
+            
+        } catch (e) {
+            return res.status(500).send((e as Error));;
+        }
+    }
+
     status = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { deviceCode } = req.params;
