@@ -12,6 +12,7 @@ import DeviceRouter from './routers/DeviceRouter';
 import AuthRoutes from './routers/AuthRoutes';
 import RoleRoutes from './routers/RoleRoutes';
 import HistoryRoutes from './routers/HistoryRoutes';
+import RoomRoutes from './routers/RoomRoutes';
 
 // utilities:
 import { CorsConfig } from './constant/CorsConfig';
@@ -35,7 +36,8 @@ class App {
         this.app.use(morgan('dev'));
         this.app.use(compression());
         this.app.use(helmet());
-        this.app.use(cors(CorsConfig));
+        // this.app.use(cors(CorsConfig));
+        this.app.use(cors());
     }
 
     protected routes():void {
@@ -46,6 +48,7 @@ class App {
         this.app.use(this.apiVersioning +'/users', UserRoutes);
         this.app.use(this.apiVersioning + '/auth', AuthRoutes)
         this.app.use(this.apiVersioning +'/device', DeviceRouter);
+        this.app.use(this.apiVersioning +'/room', RoomRoutes);
         this.app.use(this.apiVersioning +'/role', RoleRoutes);
         this.app.use(this.apiVersioning +'/history', HistoryRoutes);
         this.app.use(this.apiVersioning +'/user-role', UserRoleRoutes);

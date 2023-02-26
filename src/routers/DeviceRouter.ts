@@ -5,15 +5,17 @@ import BaseRoutes from "./BaseRoutes";
 class DeviceRouter extends BaseRoutes {
     routes(): void {
         // internal API extended with TUYA API
-        this.router.post('/command/:deviceCode', auth, DeviceController.command);
-        this.router.get('/status/:deviceCode', auth, DeviceController.status);
-        this.router.get('get-all-device-tuya/:projectId', auth, DeviceController.getRegisteredDeivceOnTuya);
+        this.router.post('/command/:deviceCode', DeviceController.command);
+        this.router.get('/status/:deviceCode', DeviceController.status);
+        this.router.get('get-all-device-tuya/:projectId', DeviceController.getRegisteredDeivceOnTuya);
+        
         // internal API
-        this.router.post('/create', auth, DeviceController.create);
-        this.router.get('/', auth, DeviceController.read);
-        this.router.get('/:deviceCode', auth, DeviceController.readById);
-        this.router.put('/:deviceCode', auth, DeviceController.update);
-        this.router.delete('/:deviceCode', auth, DeviceController.delete);
+        this.router.post('/create', DeviceController.create);
+        this.router.get('/', DeviceController.read);
+        this.router.get('/id/:deviceCode', DeviceController.readById);
+        this.router.get('/room/:room_id', DeviceController.readByRoomId);
+        this.router.put('/:deviceCode', DeviceController.update);
+        this.router.delete('/:deviceCode', DeviceController.delete);
     }
 
 }
