@@ -18,7 +18,7 @@ ENV NODE_ENV=production
 RUN npm install
 RUN npm install -g sequelize-cli
 # RUN sequelize init
-RUN npx sequelize-cli db:migrate
+# RUN npx sequelize-cli db:migrate
 CMD npm run start
 
 
