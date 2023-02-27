@@ -19,7 +19,7 @@ dotenv();
 
 class DeviceController implements IDeviceController {
 
-    commanddb = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    command = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = req.body;
             const { deviceCode } = req.params;
@@ -32,13 +32,12 @@ class DeviceController implements IDeviceController {
             // console.log(findRoomById)
 
             if (findDeviceById && findRoomById) {
-            // if (findDeviceById) {
+                // if (findDeviceById) {
                 const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
-        //         // send to tuya cloud API
+                // send to tuya cloud API
                 const commands = await TuyaRequest("POST", path, data);
                 console.log("com: ",commands)
-            // if (findDeviceById && findRoomById) {
-                
+                // if (findDeviceById && findRoomById) {
                 const payload = {
                     date: new Date().getTime(),
                     user_id: 1,
@@ -54,49 +53,45 @@ class DeviceController implements IDeviceController {
                 // axios.post('http://10.0.2.7:8181/device', payload)
                 axios.post('http://10.0.2.7:8181/device-test', payload)
                 // axios.post('http://localhost:8080/device-test', payload)
-                  .then(function (response) {
-                    console.log(response.data);
-                    res.status(200).send(requestHandler({
-                        commands,
-                        ms: new Date().getMilliseconds,
-                        minute: new Date().getMinutes,
-                        hours: new Date().getHours,
-                        date: new Date()
-                        // historyDevice
-                    }, "Succeed send command and record device", 200));
-                    // }, response.data, 200));
-                  })
-                  .catch(function (error) {
+                .then(function (response) {
+                console.log(response.data);
+                res.status(200).send(requestHandler({
+                    commands,
+                    ms: new Date().getMilliseconds,
+                    minute: new Date().getMinutes,
+                    hours: new Date().getHours,
+                    date: new Date()
+                    // historyDevice
+                }, "Succeed send command and record device", 200));
+                // }, response.data, 200));
+                })
+                .catch(function (error) {
                     console.log(error);
                     res.status(500).send(error);
-                  });
-
-                // const historyDevice = await History.create({
-                //     last_date: new Date(),
-                //     user_id: credentials.id,
-                //     device_id: deviceCode,
-                //     status: command.result,
-                //     message: command.msg as string
-                // })
-
-                
+                });
             }else{
-                // res.status(200).send(requestHandler({
-                //     commands,
-                //     ms: new Date().getMilliseconds,
-                //     minute: new Date().getMinutes,
-                //     hours: new Date().getHours,
-                //     date: new Date()
-                //     // historyDevice
-                // }, "Succeed send command only", 200));
-                throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
+                const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
+                // send to tuya cloud API
+                const commands = await TuyaRequest("POST", path, data);
+                console.log("com: ",commands)
+                res.status(200).send("Succeed send command only, history not saved to the blockchain");
+                // throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
             }
+
         } catch (e) {
-            return res.status(500).send((e as Error));;
+            const data = req.body;
+            const { deviceCode } = req.params;
+            const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
+            
+            // send to tuya cloud API
+            const commands = await TuyaRequest("POST", path, data);
+            console.log("com: ",commands)
+            res.status(200).send("Succeed send command only, history not saved to the blockchain");
+            // return res.status(500).send((e as Error));
         }
     }
 
-    command = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
+    command2 = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = req.body;
             const { deviceCode } = req.params;
