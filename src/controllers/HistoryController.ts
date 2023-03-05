@@ -14,7 +14,7 @@ class HistoryController {
     read = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const data = req.body;
-            axios.get(`http://10.0.2.7:8181/device-test/log?from=${data.address}&device_id=${data.device_id}`)
+            axios.get(`http://10.0.2.7:8181/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}`)
             .then(function (response) {
                 console.log(response)
                 res.status(200).send(response.data);
