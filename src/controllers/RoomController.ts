@@ -10,22 +10,17 @@ const Room = require('../models').Room;
 class RoomController {
     create = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            // address.getVanityWallet('', true, false).then((result) => {
-            //     return res.send(requestHandler(result, "Success creating a room", 200));
-            // }).catch((err) => {
-            //     return res.send(requestHandler(err, "Failed creating a room", 200));
-            // });
-            const accounts = await getVanityWallet('', true, false)
-            // console.log(accounts)
-            // const account = {d:2}
-            return res.send(requestHandler(accounts, "Success creating a room", 200));
+            // generate address 
+            // const accounts = await getVanityWallet('', true, false)
+            // return res.send(requestHandler(accounts, "Success creating a room", 200));
 
-            // const { room_name, room_desc, address } = req.body;
-            // const room = await Room.create({ room_name, room_desc, address });
-            // if (!room) {
-            //     throw new ErrorHandler("Cannot create room", INTERNAL_SERVER_ERROR, false);
-            // }
-            // return res.send(requestHandler(room, "Success creating a room", 200));
+            const { room_name, room_desc, address } = req.body;
+            const room = await Room.create({ room_name, room_desc, address });
+            if (!room) {
+                throw new ErrorHandler("Cannot create room", INTERNAL_SERVER_ERROR, false);
+            }
+            return res.send(requestHandler(room, "Success creating a room", 200));
+            
         } catch (e) {
             res.status(500).send((e as Error));
         }
