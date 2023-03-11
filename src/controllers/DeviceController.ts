@@ -21,49 +21,80 @@ class DeviceController implements IDeviceController {
 
     command = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
+            // testing variables
+            let start_all = 0
+            let start_db = 0
+            let start_ty = 0
+            let start_bc = 0
+            let end_bc = 0
+            let end_ty = 0
+            let end_db = 0
+            let end_all = 0
+
+            start_all = Date.now()
+
             const data = req.body;
             const { deviceCode } = req.params;
             // const { credentials } = req.app.locals;
-
-            console.log(data)
+            // console.log(data)
             // const findDeviceById = await Device.findOne({ where: { user_id: credentials.id } });
-            const findDeviceById = await Device.findOne({ where: { device_code: deviceCode } });
-            const findRoomById = await Room.findOne({ where: { id: findDeviceById.dataValues.room_id } });
-            // console.log(findRoomById)
 
-            if (findDeviceById && findRoomById) {
-                // if (findDeviceById) {
+            start_db = Date.now()
+            
+            const findDevice = await Device.findOne({
+                where: { device_code: deviceCode },
+                include: [{ model: Room , as: 'room'}]
+            });
+
+            // console.log(device.dataValues)
+            // res.status(200).send(device)
+
+            if (findDevice) {
+                end_db = Date.now()
+                start_ty = Date.now()
+
                 const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
-                // send to tuya cloud API
                 const commands = await TuyaRequest("POST", path, data);
+                
                 console.log("com: ",commands)
-                // if (findDeviceById && findRoomById) {
+                end_ty = Date.now()
+
                 const payload = {
                     date: new Date().getTime(),
                     user_id: 1,
                     // device_id: deviceCode,
-                    from: findRoomById.dataValues.address,
-                    device_id: findDeviceById.dataValues.id,
+                    from: findDevice.dataValues.room.address,
+                    device_id: findDevice.dataValues.id,
                     // status: 1,
                     message: data
                 }
 
                 console.log(payload)
-                
+                start_bc = Date.now()
+
                 // axios.post('http://10.0.2.7:8181/device', payload)
                 axios.post('http://10.0.2.7:8181/device-test', payload)
                 // axios.post('http://localhost:8080/device-test', payload)
                 .then(function (response) {
-                console.log(response.data);
-                res.status(200).send(requestHandler({
-                    commands,
-                    ms: new Date().getMilliseconds,
-                    minute: new Date().getMinutes,
-                    hours: new Date().getHours,
-                    date: new Date()
-                    // historyDevice
-                }, "Succeed send command and record device", 200));
-                // }, response.data, 200));
+                    end_bc=Date.now()
+                    end_all=Date.now()
+                    console.log(response.data);
+                    res.status(200).send(requestHandler({
+                        commands,
+                        // ms: new Date().getMilliseconds,
+                        // minute: new Date().getMinutes,
+                        // hours: new Date().getHours,
+                        // date: new Date(),
+                        requestTime: {
+                            all: `${end_all-start_all} ms`,
+                            db: `${end_db-start_db} ms`,
+                            ty:`${end_ty-start_ty} ms`,
+                            bc:`${end_bc-start_bc} ms`
+                            // raw:{start_all, start_bc, start_db, start_ty, end_all, end_bc, end_db, end_ty}
+                        }
+                        // historyDevice
+                    }, "Succeed send command and record device", 200))
+                    // }, response.data, 200));
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -87,27 +118,34 @@ class DeviceController implements IDeviceController {
             const commands = await TuyaRequest("POST", path, data);
             console.log("com: ",commands)
             res.status(200).send("Succeed send command only, history not saved to the blockchain");
+            // console.log(e)
             // return res.status(500).send((e as Error));
         }
     }
 
     command2 = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
+            let start_all = 0
+            let end_all = 0
             const data = req.body;
             const { deviceCode } = req.params;
-
+            start_all= Date.now()
             console.log(data)
             const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
     //         // send to tuya cloud API
             const commands = await TuyaRequest("POST", path, data);
             console.log("com: ",commands)
-           
+            end_all=Date.now()
             res.status(200).send(requestHandler({
                 commands,
-                ms: new Date().getMilliseconds,
-                minute: new Date().getMinutes,
-                hours: new Date().getHours,
-                date: new Date()
+                // ms: new Date().getMilliseconds,
+                // minute: new Date().getMinutes,
+                // hours: new Date().getHours,
+                date: new Date(),
+                requestTime: {
+                    all: `${end_all-start_all} ms`,
+                    raw:{start_all, end_all}
+                }
                 // historyDevice
             }, "Succeed send command only", 200));
             // throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
