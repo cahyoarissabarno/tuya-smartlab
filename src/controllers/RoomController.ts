@@ -3,6 +3,7 @@ import { INTERNAL_SERVER_ERROR, NOT_FOUND } from "../constant/ErrorType";
 import ErrorHandler from "../utils/ErrorHandler";
 import { getVanityWallet } from "../utils/vanity"; 
 import { requestHandler } from "../utils/RequestHandler";
+import axios from "axios";
 const Room = require('../models').Room;
 // const User = require('../models').User;
 
@@ -10,18 +11,31 @@ const Room = require('../models').Room;
 class RoomController {
     create = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            // generate address 
-            // const accounts = await getVanityWallet('', true, false)
-            // return res.send(requestHandler(accounts, "Success creating a room", 200));
+            axios.get('http://10.0.2.7:8181/address')
+            .then(async(result) => {
+                // console.log(result)
+                const { room_name, room_desc } = req.body;
+                const data = result.data.addr;
+                const room = await Room.create({ room_name, room_desc, address: data.address });
+                if (!room) {
+                    throw new ErrorHandler("Cannot save room to db", INTERNAL_SERVER_ERROR, false);
+                } 
+                res.send(requestHandler(room, "Success creating a room", 200));
+                // res.status(200).send(result.data);
+            }).catch((err) => {
+                res.status(500).send((err as Error));
+            });
+            
+            // const { room_name, room_desc, address } = req.body;
+            // const room = await Room.create({ room_name, room_desc, address });
+            // if (!room) {
+            //     throw new ErrorHandler("Cannot create room", INTERNAL_SERVER_ERROR, false);
+            // }
+            // return res.send(requestHandler(room, "Success creating a room", 200));
 
-            const { room_name, room_desc, address } = req.body;
-            const room = await Room.create({ room_name, room_desc, address });
-            if (!room) {
-                throw new ErrorHandler("Cannot create room", INTERNAL_SERVER_ERROR, false);
-            }
-            return res.send(requestHandler(room, "Success creating a room", 200));
             
         } catch (e) {
+            console.log(e)
             res.status(500).send((e as Error));
         }
     }

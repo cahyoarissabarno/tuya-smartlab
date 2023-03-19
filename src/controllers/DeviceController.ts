@@ -58,7 +58,7 @@ class DeviceController implements IDeviceController {
                 
                 console.log("com: ",commands)
                 end_ty = Date.now()
-
+                
                 const payload = {
                     date: new Date().getTime(),
                     user_id: 1,
@@ -72,40 +72,58 @@ class DeviceController implements IDeviceController {
                 console.log(payload)
                 start_bc = Date.now()
 
-                // axios.post('http://10.0.2.7:8181/device', payload)
-                axios.post('http://10.0.2.7:8181/device-test', payload)
-                // axios.post('http://localhost:8080/device-test', payload)
-                .then(function (response) {
-                    end_bc=Date.now()
-                    end_all=Date.now()
-                    console.log(response.data);
-                    res.status(200).send(requestHandler({
-                        commands,
-                        // ms: new Date().getMilliseconds,
-                        // minute: new Date().getMinutes,
-                        // hours: new Date().getHours,
-                        // date: new Date(),
-                        requestTime: {
-                            all: `${end_all-start_all} ms`,
-                            db: `${end_db-start_db} ms`,
-                            ty:`${end_ty-start_ty} ms`,
-                            bc:`${end_bc-start_bc} ms`
-                            // raw:{start_all, start_bc, start_db, start_ty, end_all, end_bc, end_db, end_ty}
-                        }
-                        // historyDevice
-                    }, "Succeed send command and record device", 200))
-                    // }, response.data, 200));
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    res.status(500).send(error);
-                });
+                if (commands.success) {
+                    // axios.post('http://10.0.2.7:8181/device', payload)
+                    axios.post('http://10.0.2.7:8181/device-test', payload)
+                    // axios.post('http://localhost:8080/device-test', payload)
+                    .then(function (response) {
+                        end_bc=Date.now()
+                        end_all=Date.now()
+                        console.log(response.data);
+                        res.status(200).send(requestHandler({
+                            commands,
+                            // ms: new Date().getMilliseconds,
+                            // minute: new Date().getMinutes,
+                            // hours: new Date().getHours,
+                            // date: new Date(),
+                            requestTime: {
+                                all: `${end_all-start_all} ms`,
+                                db: `${end_db-start_db} ms`,
+                                ty:`${end_ty-start_ty} ms`,
+                                bc:`${end_bc-start_bc} ms`
+                                // raw:{start_all, start_bc, start_db, start_ty, end_all, end_bc, end_db, end_ty}
+                            }
+                            // historyDevice
+                        }, "Succeed send command and record device", 200))
+                        // }, response.data, 200));
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        res.status(500).send(error);
+                    });
+                } else {
+                    res.status(500).send(commands.msg);
+                }
+                
             }else{
                 const path = process.env.TUYA_VERSION_API + `/iot-03/devices/${deviceCode}/commands`;
                 // send to tuya cloud API
                 const commands = await TuyaRequest("POST", path, data);
                 console.log("com: ",commands)
-                res.status(200).send("Succeed send command only, history not saved to the blockchain");
+                console.log("suc: ",commands.success)
+                if (commands.success) {
+                    res.status(200).send(requestHandler({
+                        commands,
+                        requestTime: {
+                            all: `${end_all-start_all} ms`,
+                            db: `${end_db-start_db} ms`,
+                            ty:`${end_ty-start_ty} ms`,
+                            bc:`${end_bc-start_bc} ms`
+                        }
+                    }, "Succeed send command only, history not saved to the blockchain", 200))
+                } else {
+                    res.status(500).send(commands.msg);
+                }
                 // throw new ErrorHandler(`Device with this code (${deviceCode}) is not found`, NOT_FOUND, false);
             }
 
@@ -117,8 +135,17 @@ class DeviceController implements IDeviceController {
             // send to tuya cloud API
             const commands = await TuyaRequest("POST", path, data);
             console.log("com: ",commands)
-            res.status(200).send("Succeed send command only, history not saved to the blockchain");
-            // console.log(e)
+            console.log("suc: ",commands.success)
+
+            if (commands.success) {
+                res.status(200).send(requestHandler({
+                    commands
+                }, "Succeed send command only, history not saved to the blockchain", 200))
+            } else {
+                res.status(500).send(commands.msg);
+                // throw new ErrorHandler(commands.msg as string, commands.code, false);
+            }
+
             // return res.status(500).send((e as Error));
         }
     }
