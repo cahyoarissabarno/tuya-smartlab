@@ -90,7 +90,8 @@ class DeviceController implements IDeviceController {
                                 all: `${end_all-start_all} ms`,
                                 db: `${end_db-start_db} ms`,
                                 ty:`${end_ty-start_ty} ms`,
-                                bc:`${end_bc-start_bc} ms`
+                                bc:`${end_bc-start_bc} ms`,
+                                nobc:`${(end_all-start_all)-(end_bc-start_bc)} ms`
                                 // raw:{start_all, start_bc, start_db, start_ty, end_all, end_bc, end_db, end_ty}
                             }
                             // historyDevice
