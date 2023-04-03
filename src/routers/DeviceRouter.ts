@@ -15,8 +15,8 @@ class DeviceRouter extends BaseRoutes {
         this.router.get('/', DeviceController.read);
         this.router.get('/id/:deviceCode', DeviceController.readById);
         this.router.get('/room/:room_id', DeviceController.readByRoomId);
-        this.router.put('/:deviceCode', DeviceController.update);
-        this.router.delete('/:deviceCode', DeviceController.delete);
+        this.router.put('/:id', DeviceController.update);
+        this.router.delete('/:id', DeviceController.delete);
     }
 
 }

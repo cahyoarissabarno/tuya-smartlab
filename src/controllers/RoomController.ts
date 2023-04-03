@@ -75,7 +75,7 @@ class RoomController {
         try {
             const { id } = req.params;
             const { new_name, new_address } = req.body;
-            const room = await Room.findOne({ id });
+            const room = await Room.findOne({ where: { id } });
             if (!room) {
                 throw new ErrorHandler("Cannot update room", INTERNAL_SERVER_ERROR, false);
             } else {
@@ -98,11 +98,11 @@ class RoomController {
     delete = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
             const { id } = req.params;
-            const findRoom = await Room.findOne({ id });
+            const findRoom = await Room.findOne({ where: { id } });
 
             if (findRoom) {
                 const deleteRoom = await Room.destroy({
-                    where: {id}
+                    where: { id }
                 });
 
                 if (!deleteRoom) {

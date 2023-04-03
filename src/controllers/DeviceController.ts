@@ -293,19 +293,20 @@ class DeviceController implements IDeviceController {
     }
     delete = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { deviceCode } = req.params;
+            const { id } = req.params;
             // const { credentials } = req.app.locals;
             const findDevice = await Device.findOne({
                 where: {
-                    device_code: deviceCode,
+                    id: id,
                     // user_id: credentials.id,
                 }
             })
 
             if (findDevice) {
+                console.log(findDevice)
                 const device = await Device.destroy({
                     where: {
-                        device_code: deviceCode,
+                        id: id,
                         // user_id: credentials.id,
                     }
                 });
@@ -330,13 +331,11 @@ class DeviceController implements IDeviceController {
     }
     update = async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
         try {
-            const { deviceCode } = req.params;
+            const { id } = req.params;
             const { device_code, user_id, device_name, device_type, room_id } = req.body;
 
-            const device = await Device.findOne({
-                device_code: deviceCode,
-            });
-
+            const device = await Device.findOne({ where: { id } });
+            console.log(device)
             if (!device) {
                 throw new ErrorHandler("Error when update device", INTERNAL_SERVER_ERROR, false);
             } else {
