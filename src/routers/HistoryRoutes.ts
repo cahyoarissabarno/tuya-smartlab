@@ -5,6 +5,7 @@ class HistoryRoutes extends BaseRoutes{
     
     routes(): void {
         this.router.post('/', HistoryController.read);
+        this.router.post('/block', HistoryController.block);
     }
     
 }

@@ -13,6 +13,7 @@ const Room = require('../models').Room;
 const History = require('../models').History;
 const User = require('../models').User;
 const UserDevice = require('../models').UserDevice;
+const Block = require('../models').Block;
 
 
 dotenv();
@@ -76,10 +77,18 @@ class DeviceController implements IDeviceController {
                     // axios.post('http://10.0.2.7:8181/device', payload)
                     axios.post('http://10.0.2.7:8181/device-test', payload)
                     // axios.post('http://localhost:8080/device-test', payload)
-                    .then(function (response) {
+                    .then(async function (response) {
                         end_bc=Date.now()
                         end_all=Date.now()
                         console.log(response.data);
+
+                        //store block number to db
+                        await Block.create({
+                            block_number: response.data.blockNumber,
+                            date: payload.date,
+                            device_id: payload.device_id
+                        });
+
                         res.status(200).send(requestHandler({
                             commands,
                             // ms: new Date().getMilliseconds,
