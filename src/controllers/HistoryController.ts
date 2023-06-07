@@ -28,7 +28,7 @@ class HistoryController {
                 },
                 limit: itemsPerPage,
                 offset: offset,
-                order: [['block_number', 'ASC']]
+                order: [['block_number', 'DESC']]
             })
 
             const jsonResult = blocks.map((block:any) => block.toJSON());
@@ -79,7 +79,7 @@ class HistoryController {
                 },
                 limit: itemsPerPage,
                 offset: offset,
-                order: [['block_number', 'ASC']]
+                order: [['block_number', 'DESC']]
             })
 
             const jsonResult = blocks.map((block:any) => block.toJSON());
