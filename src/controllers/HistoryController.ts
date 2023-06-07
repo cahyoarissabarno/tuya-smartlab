@@ -40,8 +40,8 @@ class HistoryController {
             // res.status(200).send({from: pageData[0].block_number, to: pageData[4].block_number});
             // res.status(200).send(pageData);
             
-            // axios.get(`http://10.0.2.7:8181/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
-            axios.get(`http://localhost:8080/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
+            axios.get(`http://10.0.2.7:8181/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
+            // axios.get(`http://localhost:8080/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
             .then(function (response) {
                 // console.log(response)
                 res.status(200).send(response.data);
