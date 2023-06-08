@@ -82,25 +82,28 @@ class HistoryController {
                 order: [['block_number', 'DESC']]
             })
 
-            const jsonResult = blocks.map((block:any) => block.toJSON());
-            const pageData = jsonResult.sort((a: any, b:any) => a.block_number - b.block_number);
-            const fromBlock = pageData[0].block_number;
-            const toBlock = pageData[pageData.length - 1].block_number;
-            console.log(pageData)
-            console.log(fromBlock, toBlock);
-            // res.status(200).send({from: pageData[0].block_number, to: pageData[4].block_number});//
-            // res.status(200).send(blocks);
-            
-            axios.get(`http://10.0.2.7:8181/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
-            // axios.get(`http://localhost:8080/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
-            .then(function (response) {
-                // console.log(response)
-                res.status(200).send(response.data);
-            })
-            .catch(function (error) {
-                console.log(error)
-                res.status(500).send(error);
-            });
+            if(blocks.length > 0){
+                const jsonResult = blocks.map((block:any) => block.toJSON());
+                const pageData = jsonResult.sort((a: any, b:any) => a.block_number - b.block_number);
+                const fromBlock = pageData[0].block_number;
+                const toBlock = pageData[pageData.length - 1].block_number;
+                console.log(pageData)
+                console.log(fromBlock, toBlock);
+                // res.status(200).send(blocks);
+                
+                axios.get(`http://10.0.2.7:8181/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
+                // axios.get(`http://localhost:8080/device-test/log/${data.page}?from=${data.address}&device_id=${data.device_id}&fromBlock=${fromBlock}&toBlock=${toBlock}`)
+                .then(function (response) {
+                    // console.log(response)
+                    res.status(200).send(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error)
+                    res.status(500).send(error);
+                });
+            } else {
+                res.status(404).send({messages: 'No Data Found'});
+            }
             
             // console.log(find)
         } catch (e) {
